@@ -8,9 +8,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.util.*;
-import java.util.function.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
 
 public class UserMealsUtil {
     public static void main(String[] args) {
@@ -50,15 +49,12 @@ public class UserMealsUtil {
                 collect(Collectors
                         .toMap(user -> user.getDateTime().toLocalDate(), UserMeal::getCalories, Integer::sum));
         return meals.stream()
-                .flatMap((Function<UserMeal, Stream<UserMealWithExcess>>) userMeal -> {
-                    if (TimeUtil.isBetweenHalfOpen(userMeal.getDateTime().toLocalTime(), startTime, endTime)) {
-                        boolean excessBool = caloriesPerDay < map
-                                .get(userMeal.getDateTime().toLocalDate());
-                        return Stream.of(new UserMealWithExcess(userMeal.getDateTime(), userMeal.getDescription(),
-                                userMeal.getCalories(), excessBool));
-                    } else {
-                        return null;
-                    }
+                .filter(userMeal -> TimeUtil.isBetweenHalfOpen(userMeal.getDateTime().toLocalTime(), startTime, endTime))
+                .map(userMeal -> {
+                    boolean excessBool = caloriesPerDay < map
+                            .get(userMeal.getDateTime().toLocalDate());
+                    return new UserMealWithExcess(userMeal.getDateTime(), userMeal.getDescription(),
+                            userMeal.getCalories(), excessBool);
                 })
                 .collect(Collectors.toList());
     }
