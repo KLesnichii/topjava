@@ -10,6 +10,7 @@ import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class MealsUtil {
@@ -39,6 +40,10 @@ public class MealsUtil {
                 .filter(meal -> TimeUtil.isBetweenHalfOpen(meal.getTime(), startTime, endTime))
                 .map(meal -> createTo(meal, caloriesSumByDate.get(meal.getDate()) > caloriesPerDay))
                 .collect(Collectors.toList());
+    }
+
+    public static List<MealTo> convertMealToMealTo(List<Meal> meals) {
+      return meals.stream().map(meal -> new MealTo(meal.getDateTime(),meal.getDescription(),meal.getCalories(),false)).collect(Collectors.toList());
     }
 
     private static MealTo createTo(Meal meal, boolean excess) {
