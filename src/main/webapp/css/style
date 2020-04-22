@@ -2,16 +2,21 @@
     font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
     border-collapse: collapse;
     width: 100%;
+
 }
 
 #customers td, #customers th {
-    border: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
     padding: 8px;
 }
 
-#customers tr:nth-child(even){background-color: #f2f2f2;}
+#customers tbody:nth-child(even) td {
+    background-color: #f2f2f2;
+}
 
-#customers tr:hover {background-color: #ddd;}
+#customers tr:hover {
+    background-color: #ddd;
+}
 
 #customers th {
     padding-top: 12px;
@@ -21,10 +26,90 @@
     color: white;
 }
 
-#excessGreen td{
-color: green;
+#excessGreen tr {
+    color: green;
 }
 
-#excessRed tbody{
+#excessRed tr {
     color: red;
 }
+
+a:link, a:visited {
+    color: white;
+    background-color: #4CAF50;
+    padding: 14px 25px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: .25rem;
+}
+
+#excessGreen a:link, #excessGreen a:visited {
+    background-color: #4CAF50;
+}
+
+#excessGreen a:hover, #excessGreen a:active {
+    background-color: green;
+}
+
+#excessRed a:link, #excessRed a:visited {
+    background-color: #f44336;
+}
+
+#excessRed a:hover, #excessRed a:active {
+    background-color: red;
+}
+
+#add a:link, #add a:visited {
+    background-color: #007bff;
+}
+
+#add a:hover, #add a:active {
+    background-color: blue;
+}
+
+div {
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    padding: 20px;
+}
+
+#edit div {
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    padding: 20px;
+}
+
+#edit input[type=text], #edit input[type=datetime-local], #edit input[type=number] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+#edit button[type=submit], #edit button[type=button] {
+    width: 10%;
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#edit button[type=button] {
+    background-color: #f44336;
+}
+
+#edit button[type=submit]:hover, #edit button[type=button]:hover {
+    background-color: green;
+}
+
+#edit button[type=button]:hover {
+    background-color: red;
+}
+

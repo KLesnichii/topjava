@@ -10,7 +10,6 @@ import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class MealsUtil {
@@ -42,11 +41,7 @@ public class MealsUtil {
                 .collect(Collectors.toList());
     }
 
-    public static List<MealTo> convertMealToMealTo(List<Meal> meals) {
-      return meals.stream().map(meal -> new MealTo(meal.getDateTime(),meal.getDescription(),meal.getCalories(),false)).collect(Collectors.toList());
-    }
-
     private static MealTo createTo(Meal meal, boolean excess) {
-        return new MealTo(meal.getDateTime(), meal.getDescription(), meal.getCalories(), excess);
+        return new MealTo(meal.getId(), meal.getDateTime(), meal.getDescription(), meal.getCalories(), excess);
     }
 }

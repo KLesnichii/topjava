@@ -15,6 +15,9 @@
 </head>
 <body>
 <section>
+    <div id="add">
+        <a href="meals?action=add">Добавить</a>
+    </div>
     <table id="customers">
         <tr>
             <th>
@@ -26,6 +29,9 @@
             <th>
                 Калории
             </th>
+            <th colspan="2">
+
+            </th>
         </tr>
         <c:forEach items="${meals}" var="meal">
             <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.MealTo"/>
@@ -36,9 +42,12 @@
                 <tbody id="excessGreen">
             </c:if>
             <tr>
-                <td><%=DateUtil.dateFormat(meal.getDateTime())%></td>
+                <td><%=DateUtil.dateFormat(meal.getDateTime())%>
+                </td>
                 <td>${meal.description}</td>
                 <td>${meal.calories}</td>
+                <td><a href="meals?id=${meal.id}&action=delete">Удалить</a></td>
+                <td><a href="meals?id=${meal.id}&action=edit">Обновить</a></td>
             </tr>
             </tbody>
         </c:forEach>
