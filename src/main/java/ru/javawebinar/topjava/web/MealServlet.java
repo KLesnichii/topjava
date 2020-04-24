@@ -13,20 +13,23 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-import static ru.javawebinar.topjava.config.MealInitialization.MEALS;
-
 public class MealServlet extends HttpServlet {
-    private final static Storage storage = new MapMealStorage(MEALS);
+    private  Storage storage;
+
+    @Override
+    public void init() throws ServletException {
+        storage = new MapMealStorage();
+    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
-        String id = req.getParameter("id");
+        int id = Integer.parseInt(req.getParameter("id"));
         LocalDateTime dateTime = LocalDateTime.parse(req.getParameter("dateTime"));
         String description = req.getParameter("description");
         int calories = Integer.parseInt(req.getParameter("calories"));
         Meal meal;
-        if (id.equals("")) {
+        if (id == 0) {
             meal = new Meal(dateTime, description, calories);
             storage.save(meal);
         } else {
@@ -40,24 +43,24 @@ public class MealServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String id = req.getParameter("id");
         String action = req.getParameter("action");
-        if (action == null) {
-            req.setAttribute("meals", MealsUtil.filteredByStreams(storage.getAll(), LocalTime.MIN, LocalTime.MAX, 2000));
-            req.getRequestDispatcher("/WEB-INF/jsp/meals.jsp").forward(req, resp);
-            return;
-        }
-        switch (action) {
+
+        switch (action == null ? "" : action) {
             case "delete":
-                storage.delete(id);
+                storage.delete(Integer.parseInt(id));
                 resp.sendRedirect("meals");
                 return;
             case "edit":
-                req.setAttribute("meal", storage.get(id));
+                req.setAttribute("meal", storage.get(Integer.parseInt(id)));
                 req.getRequestDispatcher("/WEB-INF/jsp/edit.jsp")
                         .forward(req, resp);
                 return;
             case "add":
                 req.setAttribute("meal", new Meal());
                 req.getRequestDispatcher("/WEB-INF/jsp/edit.jsp").forward(req, resp);
+                return;
+            default:
+                req.setAttribute("meals", MealsUtil.filteredByStreams(storage.getAll(), LocalTime.MIN, LocalTime.MAX, 2000));
+                req.getRequestDispatcher("/WEB-INF/jsp/meals.jsp").forward(req, resp);
         }
     }
 }

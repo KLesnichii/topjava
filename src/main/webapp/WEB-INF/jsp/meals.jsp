@@ -10,7 +10,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <link rel="stylesheet" href="css/style">
+    <link rel="stylesheet" href="css/style.css">
     <title>Meals</title>
 </head>
 <body>
@@ -35,12 +35,7 @@
         </tr>
         <c:forEach items="${meals}" var="meal">
             <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.MealTo"/>
-            <c:if test="${meal.excess}">
-                <tbody id="excessRed">
-            </c:if>
-            <c:if test="${!meal.excess}">
-                <tbody id="excessGreen">
-            </c:if>
+            <tbody id="${meal.excess?"excessRed":"excessGreen"}">
             <tr>
                 <td><%=DateUtil.dateFormat(meal.getDateTime())%>
                 </td>

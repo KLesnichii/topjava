@@ -2,30 +2,33 @@ package ru.javawebinar.topjava.storage;
 
 import ru.javawebinar.topjava.model.Meal;
 
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MapMealStorage implements Storage {
 
-    private final Map<String, Meal> storage;
+    private final Map<Integer, Meal> storage = new ConcurrentHashMap<>();
+
+    private final AtomicInteger atomicInteger = new AtomicInteger(1);
 
     public MapMealStorage() {
-        storage = new ConcurrentHashMap<>();
-    }
-
-    public MapMealStorage(Map<String, Meal> map) {
-        storage = new ConcurrentHashMap<>(map);
-    }
-
-    @Override
-    public void clear() {
-        storage.clear();
+        storage.put(atomicInteger.get(), new Meal(atomicInteger.getAndIncrement(), LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500));
+        storage.put(atomicInteger.get(), new Meal(atomicInteger.getAndIncrement(), LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000));
+        storage.put(atomicInteger.get(), new Meal(atomicInteger.getAndIncrement(), LocalDateTime.of(2020, Month.JANUARY, 30, 20, 0), "Ужин", 500));
+        storage.put(atomicInteger.get(), new Meal(atomicInteger.getAndIncrement(), LocalDateTime.of(2020, Month.JANUARY, 31, 0, 0), "Еда на граничное значение", 100));
+        storage.put(atomicInteger.get(), new Meal(atomicInteger.getAndIncrement(), LocalDateTime.of(2020, Month.JANUARY, 31, 10, 0), "Завтрак", 1000));
+        storage.put(atomicInteger.get(), new Meal(atomicInteger.getAndIncrement(), LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед", 500));
+        storage.put(atomicInteger.get(), new Meal(atomicInteger.getAndIncrement(), LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410));
     }
 
     @Override
     public void save(Meal meal) {
+        meal.setId(atomicInteger.getAndIncrement());
         storage.put(meal.getId(), meal);
     }
 
@@ -35,18 +38,13 @@ public class MapMealStorage implements Storage {
     }
 
     @Override
-    public Meal get(String id) {
+    public Meal get(int id) {
         return storage.get(id);
     }
 
     @Override
-    public void delete(String id) {
+    public void delete(int id) {
         storage.remove(id);
-    }
-
-    @Override
-    public int size() {
-        return storage.size();
     }
 
     @Override
