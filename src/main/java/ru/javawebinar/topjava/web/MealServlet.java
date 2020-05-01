@@ -13,8 +13,10 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import static ru.javawebinar.topjava.model.Meal.EMPTY_MEAL;
+
 public class MealServlet extends HttpServlet {
-    private  Storage storage;
+    private Storage storage;
 
     @Override
     public void init() throws ServletException {
@@ -55,7 +57,7 @@ public class MealServlet extends HttpServlet {
                         .forward(req, resp);
                 return;
             case "add":
-                req.setAttribute("meal", new Meal());
+                req.setAttribute("meal", EMPTY_MEAL);
                 req.getRequestDispatcher("/WEB-INF/jsp/edit.jsp").forward(req, resp);
                 return;
             default:
