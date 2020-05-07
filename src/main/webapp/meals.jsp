@@ -21,6 +21,23 @@
     <h3><a href="index.html">Home</a></h3>
     <hr/>
     <h2>Meals</h2>
+    <div>
+        <form method="get" action="meals?action=create">
+            <input type="hidden" name="action" value="getAllFilter">
+            <label for="startDate">От даты </label>
+            <input type="date" id="startDate" name="startDate"
+                   autocomplete="off">
+            <label for="endDate">До даты </label>
+            <input type="date" id="endDate" name="endDate"
+                   autocomplete="off">
+            <label for="startTime">От времени </label>
+            <input type="time" id="startTime" name="startTime" autocomplete="off">
+            <label for="endTime">До времени </label>
+            <input type="time" id="endTime" name="endTime" autocomplete="off">
+            <button type="submit">Отфильтровать</button>
+        </form>
+    </div>
+    <br><br>
     <a href="meals?action=create">Add Meal</a>
     <br><br>
     <table border="1" cellpadding="8" cellspacing="0">

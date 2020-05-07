@@ -16,20 +16,12 @@ public class DateTimeUtil {
         return ldt == null ? "" : ldt.format(DATE_TIME_FORMATTER);
     }
 
-    public static LocalDate checkStart(LocalDate ldt) {
-        return ldt == null ? LocalDate.MIN : ldt;
+    public static LocalDate parse(String date, LocalDate defaultDate) {
+        return date.equals("") ? defaultDate : LocalDate.parse(date);
     }
 
-    public static LocalDate checkEnd(LocalDate ldt) {
-        return ldt == null ? LocalDate.MAX : ldt;
-    }
-
-    public static LocalTime checkStart(LocalTime ldt) {
-        return ldt == null ? LocalTime.MIN : ldt;
-    }
-
-    public static LocalTime checkEnd(LocalTime ldt) {
-        return ldt == null ? LocalTime.MAX : ldt;
+    public static LocalTime parse(String time, LocalTime defaultTime) {
+        return time.equals("") ? defaultTime : LocalTime.parse(time);
     }
 }
 

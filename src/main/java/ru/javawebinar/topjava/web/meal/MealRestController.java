@@ -11,10 +11,10 @@ import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Collection;
 import java.util.List;
 
-import static ru.javawebinar.topjava.util.DateTimeUtil.checkEnd;
-import static ru.javawebinar.topjava.util.DateTimeUtil.checkStart;
+import static ru.javawebinar.topjava.util.DateTimeUtil.*;
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 import static ru.javawebinar.topjava.web.SecurityUtil.authUserCaloriesPerDay;
@@ -36,12 +36,16 @@ public class MealRestController {
         return MealsUtil.getTos(service.getAll(authUserId()), authUserCaloriesPerDay());
     }
 
-    public List<MealTo> getAll(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
-        log.info("getAllSorted");
-        return MealsUtil.getFilteredTos(service.getAll(authUserId(), checkStart(startDate), checkEnd(endDate)),
+    public List<MealTo> getAll(String startDate, String startTime, String endDate, String endTime) {
+        log.info("getAllFiltered");
+        Collection<Meal> mealsFilteredByDate = service.getAll(authUserId(),
+                parse(startDate, LocalDate.MIN),
+                parse(endDate, LocalDate.MAX)
+        );
+        return MealsUtil.getFilteredTos(mealsFilteredByDate,
                 authUserCaloriesPerDay(),
-                checkStart(startTime),
-                checkEnd(endTime));
+                parse(startTime, LocalTime.MIN),
+                parse(endTime, LocalTime.MAX));
     }
 
     public Meal get(int id) {

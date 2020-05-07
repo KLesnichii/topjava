@@ -8,11 +8,9 @@ import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static ru.javawebinar.topjava.util.MealsUtil.checkOwner;
@@ -68,6 +66,5 @@ public class InMemoryMealRepository implements MealRepository {
                 .filter(meal -> DateTimeUtil.isBetweenInclusive(meal.getDate(), startDate, endDate))
                 .collect(Collectors.toList());
     }
-
 }
 

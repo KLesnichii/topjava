@@ -13,9 +13,14 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class UserServlet extends HttpServlet {
     private static final Logger log = getLogger(UserServlet.class);
 
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("forward to users");
-        request.getRequestDispatcher("/users.jsp").forward(request, response);
+        String userId = request.getParameter("user");
+        if (userId != null) {
+            SecurityUtil.setAuthUserId(Integer.parseInt(userId));
+        }
+        request.getRequestDispatcher("meals").forward(request, response);
     }
 }

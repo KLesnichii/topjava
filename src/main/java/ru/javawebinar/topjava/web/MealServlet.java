@@ -2,10 +2,9 @@ package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.repository.inmemory.InMemoryMealRepository;
-import ru.javawebinar.topjava.service.MealService;
-import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 
 import javax.servlet.ServletConfig;
@@ -21,13 +20,14 @@ import java.util.Objects;
 public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
 
-
     private MealRestController controller;
+    private ConfigurableApplicationContext appCtx;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        controller = new MealRestController(new MealService(new InMemoryMealRepository()));
+        appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
+        controller = appCtx.getBean(MealRestController.class);
     }
 
     @Override
@@ -66,6 +66,15 @@ public class MealServlet extends HttpServlet {
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;
+            case "getAllFilter":
+                log.info("getAllFilter");
+                request.setAttribute("meals",
+                        controller.getAll(request.getParameter("startDate"),
+                                request.getParameter("startTime"),
+                                request.getParameter("endDate"),
+                                request.getParameter("endTime")));
+                request.getRequestDispatcher("/meals.jsp").forward(request, response);
+                break;
             case "all":
             default:
                 log.info("getAll");
@@ -74,6 +83,12 @@ public class MealServlet extends HttpServlet {
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        appCtx.close();
     }
 
     private int getId(HttpServletRequest request) {
