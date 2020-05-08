@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.repository.inmemory;
 
+import com.google.common.collect.ComparisonChain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -44,10 +45,10 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public List<User> getAll() {
         log.info("getAll");
-        return repository.values().stream().sorted((user1, user2) -> {
-            int c = user1.getName().compareTo(user2.getEmail());
-            return c == 0 ? user1.getEmail().compareTo(user2.getEmail()) : c;
-        }).collect(Collectors.toList());
+        return repository.values().stream().sorted((user1, user2) -> ComparisonChain.start()
+                .compare(user1.getName(), user2.getName())
+                .compare(user1.getEmail(), user2.getEmail())
+                .result()).collect(Collectors.toList());
     }
 
     @Override

@@ -7,17 +7,15 @@ import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
-import static ru.javawebinar.topjava.util.MealsUtil.checkOwner;
 
 @Repository
 public class InMemoryMealRepository implements MealRepository {
-    private Map<Integer, Meal> repository = new ConcurrentHashMap<>();
+    private Map<Integer, ConcurrentHashMap<Integer, Meal>> repository = new ConcurrentHashMap<>();
     private AtomicInteger counter = new AtomicInteger(0);
 
     {
@@ -26,45 +24,50 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public Meal save(Meal meal, int userId) {
-        meal.setUserId(userId);
+        ConcurrentHashMap<Integer, Meal> mealMap = repository.get(userId);
         if (meal.isNew()) {
+            if (mealMap == null) {
+                mealMap = new ConcurrentHashMap<>();
+            }
             meal.setId(counter.incrementAndGet());
-            repository.put(meal.getId(), meal);
+            mealMap.put(meal.getId(), meal);
+            repository.put(userId, mealMap);
             return meal;
         }
-        return get(meal.getId(), meal.getUserId()) != null ?
-                repository.put(meal.getId(), meal) : null;
+        return mealMap != null ? mealMap.computeIfPresent(meal.getId(), (id, oldMeal) -> meal) : null;
     }
 
     @Override
     public boolean delete(int id, int userId) {
-        if (get(id, userId) != null) {
-            repository.remove(id);
-            return true;
-        }
-        return false;
+        ConcurrentHashMap<Integer, Meal> mealMap = repository.get(userId);
+        return mealMap != null && mealMap.remove(id) != null;
     }
 
     @Override
     public Meal get(int id, int userId) {
-        Meal meal = repository.get(id);
-        return checkOwner(meal, userId) ? meal : null;
+        ConcurrentHashMap<Integer, Meal> mealMap = repository.get(userId);
+        return (mealMap != null) ? mealMap.get(id) : null;
     }
 
     @Override
     public Collection<Meal> getAll(int userId) {
-        return repository.values()
-                .stream()
-                .filter(meal -> checkOwner(meal, userId))
-                .sorted((m1, m2) -> -m1.getDate().compareTo(m2.getDate()))
-                .collect(Collectors.toList());
+        return getFiltered(userId, meal -> true);
     }
 
 
     public Collection<Meal> getAll(int userId, LocalDate startDate, LocalDate endDate) {
-        return getAll(userId).stream()
-                .filter(meal -> DateTimeUtil.isBetweenInclusive(meal.getDate(), startDate, endDate))
-                .collect(Collectors.toList());
+        return getFiltered(userId, meal -> DateTimeUtil.isBetweenInclusive(meal.getDate(), startDate, endDate));
+    }
+
+    private Collection<Meal> getFiltered(int userId, Predicate<Meal> filter) {
+        ConcurrentHashMap<Integer, Meal> mealMap = repository.get(userId);
+        if (mealMap != null) {
+            return mealMap.values().stream()
+                    .filter(filter)
+                    .sorted((m1, m2) -> -m1.getDateTime().compareTo(m2.getDateTime()))
+                    .collect(Collectors.toList());
+        }
+        return new ArrayList<>();
     }
 }
 
