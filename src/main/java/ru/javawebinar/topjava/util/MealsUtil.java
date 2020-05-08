@@ -51,8 +51,4 @@ public class MealsUtil {
     private static MealTo createTo(Meal meal, boolean excess) {
         return new MealTo(meal.getId(), meal.getDateTime(), meal.getDescription(), meal.getCalories(), excess);
     }
-
-    public static boolean checkOwner(Meal meal, int userId) {
-        return meal.getUserId() == (userId);
-    }
 }
