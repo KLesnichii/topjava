@@ -64,7 +64,9 @@ public class InMemoryMealRepository implements MealRepository {
         if (mealMap != null) {
             return mealMap.values().stream()
                     .filter(filter)
-                    .sorted((m1, m2) -> -m1.getDateTime().compareTo(m2.getDateTime()))
+                    .sorted(Comparator
+                            .comparing(Meal::getDateTime)
+                            .reversed())
                     .collect(Collectors.toList());
         }
         return new ArrayList<>();
