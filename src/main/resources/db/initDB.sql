@@ -7,22 +7,22 @@ CREATE SEQUENCE global_seq START WITH 100000;
 
 CREATE TABLE users
 (
-  id               INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
-  name             VARCHAR                 NOT NULL,
-  email            VARCHAR                 NOT NULL,
-  password         VARCHAR                 NOT NULL,
-  registered       TIMESTAMP DEFAULT now() NOT NULL,
-  enabled          BOOL DEFAULT TRUE       NOT NULL,
-  calories_per_day INTEGER DEFAULT 2000    NOT NULL
+    id               INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
+    name             VARCHAR                           NOT NULL,
+    email            VARCHAR                           NOT NULL,
+    password         VARCHAR                           NOT NULL,
+    registered       TIMESTAMP           DEFAULT now() NOT NULL,
+    enabled          BOOL                DEFAULT TRUE  NOT NULL,
+    calories_per_day INTEGER             DEFAULT 2000  NOT NULL
 );
 CREATE UNIQUE INDEX users_unique_email_idx ON users (email);
 
 CREATE TABLE user_roles
 (
-  user_id INTEGER NOT NULL,
-  role    VARCHAR,
-  CONSTRAINT user_roles_idx UNIQUE (user_id, role),
-  FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+    user_id INTEGER NOT NULL,
+    role    VARCHAR,
+    CONSTRAINT user_roles_idx UNIQUE (user_id, role),
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
 create table meals
@@ -30,13 +30,14 @@ create table meals
     id          integer   default nextval('global_seq') not null
         constraint meals_pk
             primary key,
-    datetime    timestamp default now()                                not null,
-    description varchar                                                not null,
-    calories    integer                                                not null,
-    user_id     integer                                                not null
+    date_time   timestamp default now()                 not null,
+    description varchar                                 not null,
+    calories    integer                                 not null,
+    user_id     integer                                 not null
         constraint meals_users_id_fk
             references users
             on delete cascade,
     constraint meals_pk_2
         unique (id, user_id)
 );
+CREATE UNIQUE INDEX users_unique_date_time_user_id_idx ON meals (date_time, user_id);
