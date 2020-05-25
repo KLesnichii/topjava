@@ -36,8 +36,6 @@ create table meals
     user_id     integer                                 not null
         constraint meals_users_id_fk
             references users
-            on delete cascade,
-    constraint meals_pk_2
-        unique (id, user_id)
+            on delete cascade
 );
-CREATE UNIQUE INDEX users_unique_date_time_user_id_idx ON meals (date_time, user_id);
+CREATE UNIQUE INDEX users_unique_user_id_date_time_idx ON meals (user_id, date_time);
