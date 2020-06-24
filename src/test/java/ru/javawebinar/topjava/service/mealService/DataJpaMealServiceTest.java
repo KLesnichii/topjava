@@ -1,8 +1,7 @@
-package ru.javawebinar.topjava.service;
+package ru.javawebinar.topjava.service.mealService;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import ru.javawebinar.topjava.Profiles;
 import ru.javawebinar.topjava.model.Meal;
@@ -13,8 +12,6 @@ import static ru.javawebinar.topjava.UserTestData.*;
 
 @ActiveProfiles(Profiles.DATAJPA)
 public class DataJpaMealServiceTest extends MealServiceTest {
-    @Autowired
-    protected DataJpaMealService service;
 
     @Test
     public void getWithUser() {
@@ -24,7 +21,7 @@ public class DataJpaMealServiceTest extends MealServiceTest {
     }
 
     @Test
-    public void getWithMealsNotFound() throws Exception {
+    public void getWithUserNotFound() throws Exception {
         Assert.assertThrows(NotFoundException.class,
                 () -> service.getWithUser(MEAL1_ID, ADMIN_ID));
     }

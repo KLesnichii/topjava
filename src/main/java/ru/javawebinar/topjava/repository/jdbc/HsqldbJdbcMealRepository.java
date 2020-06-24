@@ -8,17 +8,16 @@ import ru.javawebinar.topjava.Profiles;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Repository
 @Profile(Profiles.HSQL_DB)
-public class HsqldbJdbcMealRepository extends AbstractJdbcMealRepository<Date> {
+public class HsqldbJdbcMealRepository extends AbstractJdbcMealRepository<Timestamp> {
     public HsqldbJdbcMealRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         super(jdbcTemplate, namedParameterJdbcTemplate);
     }
 
     @Override
-    protected Date getDate(LocalDateTime startDateTime) {
+    protected Timestamp getDate(LocalDateTime startDateTime) {
         return Timestamp.valueOf(startDateTime);
     }
 }

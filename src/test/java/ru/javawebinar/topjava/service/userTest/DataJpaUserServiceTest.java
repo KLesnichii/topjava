@@ -1,20 +1,21 @@
-package ru.javawebinar.topjava.service;
+package ru.javawebinar.topjava.service.userTest;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import ru.javawebinar.topjava.Profiles;
+
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import java.util.List;
+
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.*;
+import static ru.javawebinar.topjava.UserTestData.getNew;
 
 @ActiveProfiles(Profiles.DATAJPA)
 public class DataJpaUserServiceTest extends UserServiceTest {
-    @Autowired
-    protected DataJpaUserService service;
 
     @Test
     public void getWithMeals() {
@@ -27,5 +28,13 @@ public class DataJpaUserServiceTest extends UserServiceTest {
     public void getWithMealsNotFound() throws Exception {
         Assert.assertThrows(NotFoundException.class,
                 () -> service.getWithMeal(1));
+    }
+
+    @Test
+    public void getWithMealsForUserWithoutMeals() {
+        User created = service.create(getNew());
+        User actual = service.getWithMeal(created.getId());
+        USER_MATCHER.assertMatch(actual, created);
+        MEAL_MATCHER.assertMatch(actual.getMeals(), List.of());
     }
 }

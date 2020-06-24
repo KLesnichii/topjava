@@ -2,20 +2,16 @@ package ru.javawebinar.topjava.service;
 
 import org.junit.AfterClass;
 import org.junit.Rule;
-import org.junit.Test;
 import org.junit.rules.Stopwatch;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.CacheManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.javawebinar.topjava.ActiveDbProfileResolver;
-import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.util.concurrent.TimeUnit;
 
@@ -54,29 +50,4 @@ public abstract class AbstractServiceTest {
                 "\n---------------------------------");
         results.setLength(0);
     }
-
-    @Autowired
-    protected CacheManager cacheManager;
-
-
-    @Test
-    public abstract void create() throws Exception;
-
-    @Test
-    public abstract void delete() throws Exception;
-
-    @Test(expected = NotFoundException.class)
-    public abstract void deletedNotFound() throws Exception;
-
-    @Test
-    public abstract void get() throws Exception;
-
-    @Test(expected = NotFoundException.class)
-    public abstract void getNotFound() throws Exception;
-
-    @Test
-    public abstract void update() throws Exception;
-
-    @Test
-    public abstract void getAll() throws Exception;
 }
