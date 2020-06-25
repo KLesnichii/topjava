@@ -3,6 +3,7 @@ package ru.javawebinar.topjava.repository.datajpa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 
@@ -19,15 +20,14 @@ public class DataJpaMealRepository implements MealRepository {
     @Autowired
     private CrudUserRepository userCrudRepository;
 
+    @Transactional
     @Override
     public Meal save(Meal meal, int userId) {
         meal.setUser(userCrudRepository.getOne(userId));
-        if (meal.isNew()) {
-            return mealCrudRepository.save(meal);
-        } else {
-            return mealCrudRepository.update(meal.getId(), userId,
-                    meal.getDateTime(), meal.getDescription(), meal.getCalories()) != 0 ? meal : null;
+        if (!meal.isNew() && get(meal.getId(), userId) == null) {
+            return null;
         }
+        return mealCrudRepository.save(meal);
     }
 
     @Override
