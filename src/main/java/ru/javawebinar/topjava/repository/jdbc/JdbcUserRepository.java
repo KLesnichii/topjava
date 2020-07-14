@@ -17,13 +17,13 @@ import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
-import javax.validation.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static ru.javawebinar.topjava.repository.JdbcUtil.VALIDATOR;
 import static ru.javawebinar.topjava.repository.JdbcUtil.validate;
 
 @Repository
@@ -32,16 +32,11 @@ public class JdbcUserRepository implements UserRepository {
 
     private static final BeanPropertyRowMapper<User> ROW_MAPPER = BeanPropertyRowMapper.newInstance(User.class);
 
-    private final SetExtractor SET_EXTRACTOR = new SetExtractor();
-
     private final JdbcTemplate jdbcTemplate;
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     private final SimpleJdbcInsert insertUser;
-
-    private final ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
-    private final Validator validator = validatorFactory.getValidator();
 
     @Autowired
     public JdbcUserRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
@@ -56,7 +51,7 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     @Transactional
     public User save(User user) {
-        validate(user, validator);
+        validate(user, VALIDATOR);
         BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(user);
         List<Role> roles = new ArrayList<>(user.getRoles());
         if (user.isNew()) {
@@ -84,7 +79,7 @@ public class JdbcUserRepository implements UserRepository {
     public User get(int id) {
         List<User> users = jdbcTemplate.query("SELECT * " +
                 "FROM users LEFT JOIN  user_roles ON users.id = user_roles.user_id " +
-                "WHERE id=?", SET_EXTRACTOR, id);
+                "WHERE id=?", new SetExtractor(), id);
         return DataAccessUtils.singleResult(users);
     }
 
@@ -93,7 +88,7 @@ public class JdbcUserRepository implements UserRepository {
 //        return jdbcTemplate.queryForObject("SELECT * FROM users WHERE email=?", ROW_MAPPER, email);
         List<User> users = jdbcTemplate.query("SELECT * " +
                 "FROM users LEFT JOIN user_roles ON users.id = user_roles.user_id" +
-                " WHERE email=?", SET_EXTRACTOR, email);
+                " WHERE email=?", new SetExtractor(), email);
         return DataAccessUtils.singleResult(users);
     }
 
@@ -102,35 +97,26 @@ public class JdbcUserRepository implements UserRepository {
         return jdbcTemplate.query("SELECT * " +
                         "FROM users LEFT JOIN user_roles ON users.id = user_roles.user_id " +
                         "ORDER BY name, email",
-                SET_EXTRACTOR);
+                new SetExtractor());
     }
 
     private class SetExtractor implements ResultSetExtractor<List<User>> {
         @Override
         public List<User> extractData(ResultSet rs) throws SQLException, DataAccessException {
-            Map<Integer, User> map = new HashMap<>();
+            Map<Integer, User> map = new LinkedHashMap<>();
             AtomicInteger rowCount = new AtomicInteger(0);
             while (rs.next()) {
                 Role role = Role.valueOf(rs.getString("role"));
+                User newUser = ROW_MAPPER.mapRow(rs, rowCount.get());
                 User user = map.computeIfAbsent(rs.getInt("id"), id -> {
-                    User newUser = getMapRow(rs, rowCount.get());
-                    newUser.setRoles(Set.of());
+                    newUser.setRoles(EnumSet.noneOf(Role.class));
                     return newUser;
                 });
-                user.getRoles().addAll(Set.of(role));
+                user.getRoles().addAll(EnumSet.of(role));
                 rowCount.incrementAndGet();
             }
             return new ArrayList<>(map.values());
         }
-    }
-
-    private static User getMapRow(ResultSet rs, Integer rowCount) {
-        try {
-            return ROW_MAPPER.mapRow(rs, rowCount);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     private void batchUpdate(List<Role> roles, Integer user_id) {
