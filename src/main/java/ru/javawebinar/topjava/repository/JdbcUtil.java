@@ -4,12 +4,11 @@ import javax.validation.*;
 import java.util.Set;
 
 public class JdbcUtil {
-    public final static Validator VALIDATOR = Validation.buildDefaultValidatorFactory().getValidator();
-
-
-    public static <T> void validate(T t, Validator validator) {
-        Set<ConstraintViolation<T>> constraintViolations = validator
-                .validate(t);
+    public static <T> void validate(T t) {
+        Set<ConstraintViolation<T>> constraintViolations = Validation.
+                buildDefaultValidatorFactory().
+                getValidator().
+                validate(t);
 
         if (!constraintViolations.isEmpty()) {
             throw new ConstraintViolationException(constraintViolations);

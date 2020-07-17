@@ -15,7 +15,6 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static ru.javawebinar.topjava.repository.JdbcUtil.VALIDATOR;
 import static ru.javawebinar.topjava.repository.JdbcUtil.validate;
 
 @Repository
@@ -42,7 +41,7 @@ public class JdbcMealRepository implements MealRepository {
     @Override
     @Transactional
     public Meal save(Meal meal, int userId) {
-        validate(meal, VALIDATOR);
+        validate(meal);
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("id", meal.getId())
                 .addValue("description", meal.getDescription())

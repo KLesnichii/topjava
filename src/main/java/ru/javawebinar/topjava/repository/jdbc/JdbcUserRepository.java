@@ -7,7 +7,6 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
-
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -21,9 +20,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
-import static ru.javawebinar.topjava.repository.JdbcUtil.VALIDATOR;
 import static ru.javawebinar.topjava.repository.JdbcUtil.validate;
 
 @Repository
@@ -51,7 +48,7 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     @Transactional
     public User save(User user) {
-        validate(user, VALIDATOR);
+        validate(user);
         BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(user);
         List<Role> roles = new ArrayList<>(user.getRoles());
         if (user.isNew()) {
@@ -104,16 +101,16 @@ public class JdbcUserRepository implements UserRepository {
         @Override
         public List<User> extractData(ResultSet rs) throws SQLException, DataAccessException {
             Map<Integer, User> map = new LinkedHashMap<>();
-            AtomicInteger rowCount = new AtomicInteger(0);
+            int rowCount = 0;
             while (rs.next()) {
                 Role role = Role.valueOf(rs.getString("role"));
-                User newUser = ROW_MAPPER.mapRow(rs, rowCount.get());
+                User newUser = ROW_MAPPER.mapRow(rs, rowCount);
                 User user = map.computeIfAbsent(rs.getInt("id"), id -> {
                     newUser.setRoles(EnumSet.noneOf(Role.class));
                     return newUser;
                 });
                 user.getRoles().addAll(EnumSet.of(role));
-                rowCount.incrementAndGet();
+                rowCount++;
             }
             return new ArrayList<>(map.values());
         }
