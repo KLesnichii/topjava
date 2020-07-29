@@ -27,8 +27,8 @@
           class="org.springframework.context.support.ConversionServiceFactoryBean">
         <property name="converters">
             <list>
-                <ref bean="dataConverterFactory"/>
-                <ref bean="timeConverterFactory"/>
+                <ref bean="dataConverter"/>
+                <ref bean="timeConverter"/>
             </list>
         </property>
     </bean>
