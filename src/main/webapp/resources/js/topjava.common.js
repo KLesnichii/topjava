@@ -33,9 +33,14 @@ function deleteRow(id) {
 }
 
 function updateTable() {
-    $.get(context.ajaxUrl, function (data) {
-        context.datatableApi.clear().rows.add(data).draw();
-    });
+    if (context.ajaxUrl === "ajax/admin/meals/") {
+        doFilter();
+    } else {
+        $.get(context.ajaxUrl, function (data) {
+            context.datatableApi.clear().rows.add(data).draw();
+        })
+    }
+    ;
 }
 
 function save() {

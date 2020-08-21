@@ -1,4 +1,5 @@
 // $(document).ready(function () {
+
 $(function () {
     makeEditable({
             ajaxUrl: "ajax/admin/users/",
@@ -39,4 +40,27 @@ $(function () {
             })
         }
     );
+    $(".enabledCheckbox").change(function () {
+        let id = $(this).parents("tr").attr("id");
+        if ($(this).prop('checked')) {
+            setCheckbox(true, id)
+            // $(this).parent().removeClass('test');
+        } else {
+            setCheckbox(false, id)
+            // $(this).parent().addClass('test');
+        }
+    });
 });
+
+function setCheckbox(enabled, id) {
+    $.ajax({
+        url: context.ajaxUrl + id,
+        type: "POST",
+        data: {enabled: enabled}
+    }).done(function () {
+        updateTable();
+    });
+}
+
+
+

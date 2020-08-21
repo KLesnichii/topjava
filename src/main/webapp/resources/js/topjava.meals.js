@@ -1,3 +1,25 @@
+var saveData;
+
+function filter() {
+    saveData = $("#filter").serialize();
+    doFilter();
+}
+
+function clearFilter() {
+    $("#filter").trigger("reset");
+    filter();
+}
+
+function doFilter() {
+    $.ajax({
+        type: "GET",
+        url: "ajax/admin/meals/filter",
+        data: saveData
+    }).done(function (data) {
+        context.datatableApi.clear().rows.add(data).draw();
+    });
+}
+
 $(function () {
     makeEditable({
             ajaxUrl: "ajax/admin/meals/",
