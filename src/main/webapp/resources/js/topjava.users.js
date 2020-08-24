@@ -42,13 +42,7 @@ $(function () {
     );
     $(".enabledCheckbox").change(function () {
         let id = $(this).parents("tr").attr("id");
-        if ($(this).prop('checked')) {
-            setCheckbox(true, id)
-            // $(this).parent().removeClass('test');
-        } else {
-            setCheckbox(false, id)
-            // $(this).parent().addClass('test');
-        }
+        setCheckbox($(this).prop('checked'), id);
     });
 });
 
@@ -58,7 +52,7 @@ function setCheckbox(enabled, id) {
         type: "POST",
         data: {enabled: enabled}
     }).done(function () {
-        updateTable();
+        $('tr:focus-within').css('color', enabled ? 'black' : 'red');
     });
 }
 

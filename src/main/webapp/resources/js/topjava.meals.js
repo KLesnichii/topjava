@@ -7,7 +7,9 @@ function filter() {
 
 function clearFilter() {
     $("#filter").trigger("reset");
-    filter();
+    $.get("ajax/admin/meals").done(function (data) {
+        reloadTable(data);
+    });
 }
 
 function doFilter() {
@@ -16,7 +18,7 @@ function doFilter() {
         url: "ajax/admin/meals/filter",
         data: saveData
     }).done(function (data) {
-        context.datatableApi.clear().rows.add(data).draw();
+        reloadTable(data);
     });
 }
 

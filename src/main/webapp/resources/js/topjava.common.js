@@ -37,10 +37,13 @@ function updateTable() {
         doFilter();
     } else {
         $.get(context.ajaxUrl, function (data) {
-            context.datatableApi.clear().rows.add(data).draw();
-        })
+            reloadTable(data);
+        });
     }
-    ;
+}
+
+function reloadTable(data) {
+    context.datatableApi.clear().rows.add(data).draw();
 }
 
 function save() {
