@@ -42,19 +42,19 @@ $(function () {
     );
     $(".enabledCheckbox").change(function () {
         let id = $(this).parents("tr").attr("id");
-        setCheckbox($(this).prop('checked'), id);
+        setCheckbox($(this), id);
     });
 });
 
-function setCheckbox(enabled, id) {
+function setCheckbox(chkbox, id) {
+    let enable = chkbox.prop('checked');
     $.ajax({
         url: context.ajaxUrl + id,
         type: "POST",
-        data: {enabled: enabled}
+        data: {enabled: enable}
     }).done(function () {
-        $('tr:focus-within').css('color', enabled ? 'black' : 'red');
+        $('tr:focus-within').css('color', enable ? 'black' : 'red');
+    }).fail(function () {
+        $(chkbox).prop("checked", !enable);
     });
 }
-
-
-
