@@ -67,3 +67,8 @@ $(function () {
         updateTable: updateFilteredTable
     });
 });
+
+
+$("#dateTime").datetimepicker({
+    format: 'yy-m-d H:m'
+});
