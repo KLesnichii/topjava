@@ -68,7 +68,36 @@ $(function () {
     });
 });
 
+$.ajaxSetup({
+    converters: {
+        "text json": function (result) {
+            result = JSON.parse(result);
+            for (let i in result) {
+                if (i === "dateTime") {
+                    result[i] = result[i].substring(0, 10) + " " + result[i].substring(11, 16);
+                }
+            }
+            return result;
+        }
+    }
+});
 
 $("#dateTime").datetimepicker({
-    format: 'yy-m-d H:m'
+    format: 'Y-m-d H:00'
+});
+$("#startTime").datetimepicker({
+    datepicker: false,
+    format: 'H:00'
+});
+$("#endTime").datetimepicker({
+    datepicker: false,
+    format: 'H:00'
+});
+$("#startDate").datetimepicker({
+    timepicker: false,
+    format: 'Y-m-d'
+});
+$("#endDate").datetimepicker({
+    timepicker: false,
+    format: 'Y-m-d'
 });
