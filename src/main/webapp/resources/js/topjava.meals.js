@@ -83,15 +83,15 @@ $.ajaxSetup({
 });
 
 $("#dateTime").datetimepicker({
-    format: 'Y-m-d H:00'
+    format: 'Y-m-d H:i'
 });
 $("#startTime").datetimepicker({
     datepicker: false,
-    format: 'H:00'
+    format: 'H:i'
 });
 $("#endTime").datetimepicker({
     datepicker: false,
-    format: 'H:00'
+    format: 'H:i'
 });
 $("#startDate").datetimepicker({
     timepicker: false,
