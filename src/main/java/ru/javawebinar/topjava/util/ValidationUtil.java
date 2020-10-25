@@ -2,7 +2,11 @@ package ru.javawebinar.topjava.util;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
 import ru.javawebinar.topjava.HasId;
+import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.service.UserService;
+import ru.javawebinar.topjava.to.UserTo;
 import ru.javawebinar.topjava.util.exception.IllegalRequestDataException;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
@@ -84,5 +88,19 @@ public class ValidationUtil {
                         .map(fe -> String.format("[%s] %s", fe.getField(), fe.getDefaultMessage()))
                         .collect(Collectors.joining("<br>"))
         );
+    }
+
+    public static Errors emailExistsValidate(UserTo userTo, Errors errors, UserService userService) {
+        if (userTo.getEmail() != null && !userTo.getEmail().equals("")) {
+            try {
+                User user = userService.getByEmail(userTo.getEmail());
+                if (!userTo.isNew() && user.getId().equals(userTo.getId())) {
+                    throw new NotFoundException("");
+                }
+                errors.rejectValue("email", "user.emailAlreadyExists");
+            } catch (NotFoundException ignored) {
+            }
+        }
+        return errors;
     }
 }
