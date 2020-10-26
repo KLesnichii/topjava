@@ -1,8 +1,8 @@
 package ru.javawebinar.topjava.web.meal;
 
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -114,6 +114,20 @@ class MealRestControllerTest extends AbstractControllerTest {
     void createWithLocationNotValid() throws Exception {
         Meal newMeal = MealTestData.getNew();
         newMeal.setCalories(1);
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(newMeal))
+                .with(userHttpBasic(USER)))
+                .andExpect(status().isUnprocessableEntity())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+    }
+
+    // https://stackoverflow.com/questions/34037334/mockito-and-reloadableresourcebundlemessagesource-doesnt-go-well-together
+    @Test
+    void DateTimeNotExist() throws Exception {
+        Meal newMeal = MealTestData.getNew();
+        newMeal.setDateTime(MEAL1.getDateTime());
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newMeal))

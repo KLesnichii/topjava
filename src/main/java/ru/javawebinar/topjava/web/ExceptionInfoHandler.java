@@ -89,7 +89,7 @@ public class ExceptionInfoHandler {
         StringBuilder stringBuilder = new StringBuilder();
         for (FieldError fieldError : result.getFieldErrors()) {
             String message;
-            if (Objects.equals(fieldError.getCode(), "user.emailAlreadyExists")) {
+            if (Objects.equals(fieldError.getCode(), "user.emailAlreadyExists") || Objects.equals(fieldError.getCode(), "meal.dateTimeAlreadyExists")) {
                 message = messageSource.getMessage(fieldError.getCode(), null, LocaleContextHolder.getLocale());
             } else {
                 message = fieldError.getDefaultMessage();
