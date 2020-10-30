@@ -12,13 +12,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class DateTimeValidation implements Validator {
+public class DateTimeValidator implements Validator {
 
     @Autowired
     MealService mealService;
-
-    @Autowired
-    Validator validator;
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -37,6 +34,5 @@ public class DateTimeValidation implements Validator {
                 }
             }
         }
-        validator.validate(meal, errors);
     }
 }

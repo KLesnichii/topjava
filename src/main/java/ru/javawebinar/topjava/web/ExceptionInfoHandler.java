@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -90,7 +90,8 @@ public class ExceptionInfoHandler {
         for (FieldError fieldError : result.getFieldErrors()) {
             String message;
             if (Objects.equals(fieldError.getCode(), "user.emailAlreadyExists") || Objects.equals(fieldError.getCode(), "meal.dateTimeAlreadyExists")) {
-                message = messageSource.getMessage(fieldError.getCode(), null, LocaleContextHolder.getLocale());
+                MessageSourceAccessor messageSourceAccessor = new MessageSourceAccessor(messageSource);
+                message = messageSourceAccessor.getMessage(fieldError);
             } else {
                 message = fieldError.getDefaultMessage();
             }

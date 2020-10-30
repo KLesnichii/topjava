@@ -13,6 +13,7 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -96,6 +97,19 @@ class MealRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void updateDateTimeNotExist() throws Exception {
+        Meal updated = MealTestData.getUpdated();
+        updated.setDateTime(MEAL2.getDateTime());
+        perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID).contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updated))
+                .with(userHttpBasic(USER)))
+                .andExpect(status().isUnprocessableEntity())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(containsString("dateTime meal.dateTimeAlreadyExists")));
+    }
+
+    @Test
     void createWithLocation() throws Exception {
         Meal newMeal = MealTestData.getNew();
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
@@ -125,7 +139,7 @@ class MealRestControllerTest extends AbstractControllerTest {
 
     // https://stackoverflow.com/questions/34037334/mockito-and-reloadableresourcebundlemessagesource-doesnt-go-well-together
     @Test
-    void DateTimeNotExist() throws Exception {
+    void createDateTimeNotExist() throws Exception {
         Meal newMeal = MealTestData.getNew();
         newMeal.setDateTime(MEAL1.getDateTime());
         perform(MockMvcRequestBuilders.post(REST_URL)
@@ -134,7 +148,8 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(USER)))
                 .andExpect(status().isUnprocessableEntity())
                 .andDo(print())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(containsString("dateTime meal.dateTimeAlreadyExists")));
     }
 
     @Test

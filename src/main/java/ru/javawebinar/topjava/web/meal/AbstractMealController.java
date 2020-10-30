@@ -10,7 +10,7 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
-import ru.javawebinar.topjava.web.DateTimeValidation;
+import ru.javawebinar.topjava.web.DateTimeValidator;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDate;
@@ -24,11 +24,11 @@ public abstract class AbstractMealController {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    DateTimeValidation dateTimeValidation;
+    DateTimeValidator dateTimeValidator;
 
     @InitBinder
     protected void initBinder(WebDataBinder binder) {
-        binder.setValidator(dateTimeValidation);
+        binder.addValidators(dateTimeValidator);
     }
 
     @Autowired

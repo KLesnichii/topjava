@@ -1,13 +1,10 @@
 package ru.javawebinar.topjava.web.user;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.to.UserTo;
-import ru.javawebinar.topjava.web.UserToEmailValidator;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -15,14 +12,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/ajax/admin/users")
 public class AdminUIController extends AbstractUserController {
-
-    @Autowired
-    UserToEmailValidator userToEmailValidator;
-
-    @InitBinder
-    protected void initBinder(WebDataBinder binder) {
-        binder.setValidator(userToEmailValidator);
-    }
 
     @Override
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
