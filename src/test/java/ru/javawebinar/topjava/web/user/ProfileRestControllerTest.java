@@ -86,7 +86,7 @@ class ProfileRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isUnprocessableEntity())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().string(containsString("email user.emailAlreadyExists")));
+                .andExpect(content().string(containsString("User with this email already exists")));
     }
 
     @Test
@@ -121,6 +121,6 @@ class ProfileRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isUnprocessableEntity())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().string(containsString("email user.emailAlreadyExists")));
+                .andExpect(content().string(containsString("User with this email already exists")));
     }
 }

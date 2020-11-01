@@ -106,7 +106,7 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isUnprocessableEntity())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().string(containsString("dateTime meal.dateTimeAlreadyExists")));
+                .andExpect(content().string(containsString("You already have meal with this date/time")));
     }
 
     @Test
@@ -149,7 +149,7 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isUnprocessableEntity())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().string(containsString("dateTime meal.dateTimeAlreadyExists")));
+                .andExpect(content().string(containsString("You already have meal with this date/time")));
     }
 
     @Test

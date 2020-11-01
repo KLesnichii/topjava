@@ -30,7 +30,7 @@ public class DateTimeValidator implements Validator {
             if (!meals.isEmpty()) {
                 Optional<Meal> mealForThisDate = meals.stream().filter(m -> Util.isBetweenHalfOpen(m.getTime(), meal.getTime(), meal.getTime().plusMinutes(1))).findFirst();
                 if (mealForThisDate.isPresent() && !mealForThisDate.get().getId().equals(meal.getId())) {
-                    errors.rejectValue("dateTime", "meal.dateTimeAlreadyExists", "meal.dateTimeAlreadyExists");
+                    errors.rejectValue("dateTime", "meal.dateTimeAlreadyExists");
                 }
             }
         }
